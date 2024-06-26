@@ -36,14 +36,11 @@ class CurrencyConverter:
 
         convert = soup.find("span", {"class": "DFlfde", "data-precision":"2"}) # находим и выводим цифру конвертации
         
-        return convert.text
+        return convert.text.replace(',', '.') # заменяем запятую на точку для того, что бы было float)
     
 
     def check_currency_rate(self):
-        currency_str = self.get_currency_rate()
-        print(f"Currency string: {currency_str}")
-        currency = float(currency_str.replace(',', '.').replace(' ', ''))
-        print(f"Currency value: {currency}")
+        currency = float(self.get_currency_rate())
         if currency >= self.curr_conv_price + self.diff:
             print("Курс валюты вырос!")
         elif currency <= self.curr_conv_price - self.diff:
@@ -51,15 +48,6 @@ class CurrencyConverter:
         print(currency)
         time.sleep(3)
         self.check_currency_rate()
-    # def check_currency_rate(self):
-    #     currency = float(self.get_currency_rate().replace(',', '.'))  # заменяем запятую на точку для того, что бы было float)
-    #     if currency >= self.curr_conv_price + self.diff:
-    #         print("Курс валюты вырос!")
-    #     elif currency <= self.curr_conv_price - self.diff:
-    #         print("Курс валюты упал!")
-    #     print(currency)
-    #     time.sleep(3) 
-    #     self.check_currency_rate()
 
 currency = CurrencyConverter()
 currency.check_currency_rate()

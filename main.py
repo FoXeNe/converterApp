@@ -1,11 +1,14 @@
 import asyncio
+import aioschedule
 import logging
 import sys
 import os
 
+from keyboards import greet_kb
 from values import CurrencyConverter
+
+from datetime import datetime
 from aiogram import Bot, Dispatcher
-import aiogram.utils.markdown as fmt
 from aiogram.enums import ParseMode
 from aiogram.client.default import DefaultBotProperties
 from aiogram.types import Message
@@ -28,7 +31,7 @@ async def command_start_handler(message: Message) -> None:
 
 @dp.message(Command("help"))
 async def help_handler(message: Message) -> None:
-    await message.answer("Что бы увидеть курс валют напишите /check \nЧто бы увидеть все команды напишите /help \nЕсли хотите узнать, что валюта выросла или упала на 5 рублей, напишите /wait")
+    await message.answer("Что бы увидеть курс валют напишите /check \nЧто бы увидеть все команды напишите /help \nЕсли хотите узнать, как поменяется валюта в определенное время /wait")
 
 @dp.message(Command("check"))
 async def rate_handler(message: Message) -> None:
@@ -36,12 +39,24 @@ async def rate_handler(message: Message) -> None:
     await message.answer(f"Текущий курс валют: {curr}")
 
 @dp.message(Command("wait"))
-async def wait_handler() -> None:
-    curr = float(currency.get_currency_rate())
-    if curr >= currency.curr_conv_price + currency.diff:
-        print("Курс валюты вырос на 5 рублей")
-    elif curr <= currency.curr_conv_price - currency.diff:
-        print("Курс валюты упал на 5 рублей")
+async def wait_handler(message: Message) -> None:
+    await message.reply("Во сколько ты хочешь получить уведомление об курсе валют?", reply_markup=greet_kb)
+    if message.text == "00":
+        if datetime.now() == "00":
+            rate_handler(message)
+    elif message.text == "12":
+        if datetime.now() == "12":
+            rate_handler(message)
+    elif message.text == "15":
+        if datetime.now() == "15":
+            rate_handler(message)
+    elif message.text == "18":
+        if datetime.now() == "18":
+            rate_handler(message)
+    elif message.text == "21":
+        if datetime.now() == "21":
+            rate_handler(message)
+        
 
 async def main() -> None:
     await dp.start_polling(bot)

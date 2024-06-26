@@ -26,7 +26,9 @@ class CurrencyConverter:
     def check_currency_rate(self):
         currency = float(self.get_currency_rate())
         if currency >= self.curr_conv_price + self.diff:
-            print("Курс валюты вырос!")
+            print("Курс валюты вырос на 5 рублей")
         elif currency <= self.curr_conv_price - self.diff:
-            print("Курс валюты упал!")
+            print("Курс валюты упал на 5 рублей")
+        time.sleep(60)
+        self.check_currency_rate()
         return currency

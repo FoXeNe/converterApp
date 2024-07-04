@@ -4,7 +4,6 @@ import logging
 import sys
 import os
 
-from keyboards import greet_kb
 from values import CurrencyConverter
 
 from datetime import datetime
@@ -24,6 +23,9 @@ dp = Dispatcher()
 bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 
 currency = CurrencyConverter()
+async def send_message_with_delay(chat_id, curr, delay): 
+    await asyncio.sleep(delay) 
+    await bot.send_message(chat_id, f"Текущий курс валют: {curr}")
 
 @dp.message(CommandStart())
 async def command_start_handler(message: Message) -> None:
@@ -40,23 +42,13 @@ async def rate_handler(message: Message) -> None:
 
 @dp.message(Command("wait"))
 async def wait_handler(message: Message) -> None:
-    await message.reply("Во сколько ты хочешь получить уведомление об курсе валют?", reply_markup=greet_kb)
-    if message.text == "00":
-        if datetime.now() == "00":
-            rate_handler(message)
-    elif message.text == "12":
-        if datetime.now() == "12":
-            rate_handler(message)
-    elif message.text == "15":
-        if datetime.now() == "15":
-            rate_handler(message)
-    elif message.text == "18":
-        if datetime.now() == "18":
-            rate_handler(message)
-    elif message.text == "21":
-        if datetime.now() == "21":
-            rate_handler(message)
-        
+    await message.reply("Через сколько минут ты хочешь получить сообщение об курсе валют")
+@dp.message()
+async def get_delay(message: Message):
+    chat_id = message.chat.id
+    curr = currency.check_currency_rate()
+    delay = int(message.text) * 60
+    await send_message_with_delay(chat_id, curr, delay)
 
 async def main() -> None:
     await dp.start_polling(bot)
